@@ -1,4 +1,4 @@
-# UniRide — Carona Universitária
+# UniRide - Carona Universitária
 
 O UniRide é um aplicativo de **carona solidária** entre estudantes universitários. Motoristas que já vão fazer um trajeto saindo do campus (ou indo para ele) oferecem as vagas livres do carro. Passageiros da mesma instituição informam para onde vão e reservam uma vaga, e o custo da viagem é **dividido entre todos no carro**, sem lucro para o motorista.
 
