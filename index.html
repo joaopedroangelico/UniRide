@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#6C63FF">
+    <title>UniRide - Carona Universitária</title>
+
+    <!-- Aplica o tema antes da página aparecer (evita "piscar" o tema claro) -->
+    <script>
+        (function () {
+            var tema = null;
+            try { tema = localStorage.getItem('theme'); } catch (e) { }
+            if (!tema) {
+                tema = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            document.documentElement.setAttribute('data-bs-theme', tema);
+        })();
+    </script>
+
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- CSS Customizado -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Barra de Navegação -->
+    <nav class="navbar bg-body-tertiary shadow-sm fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand me-auto" href="#">
+                <i class="fas fa-car-alt me-2" aria-hidden="true"></i>UniRide
+            </a>
+            <button type="button" class="btn btn-sm btn-secondary me-2" id="darkModeToggle" aria-label="Alternar modo escuro">
+                <i class="fas fa-moon" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal" aria-label="Entrar">
+                <i class="fas fa-user" aria-hidden="true"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Conteúdo Principal -->
+    <main class="container my-5 pt-5">
+        <!-- Seção de Solicitação de Viagem -->
+        <section class="card mb-4 ride-card">
+            <div class="card-body">
+                <h1 class="h5 card-title mb-4">Solicitar Carona</h1>
+                <form id="form-busca" novalidate>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label for="origin-input" class="form-label">Origem</label>
+                            <input type="text" id="origin-input" name="origem" class="form-control"
+                                placeholder="Digite sua localização atual" autocomplete="off" required pattern=".*\S.*">
+                            <div class="invalid-feedback">Informe a origem.</div>
+                        </div>
+                        <div class="col-12">
+                            <label for="destiny-input" class="form-label">Destino</label>
+                            <input type="text" id="destiny-input" name="destino" class="form-control"
+                                placeholder="Para onde você quer ir?" autocomplete="off" required pattern=".*\S.*">
+                            <div class="invalid-feedback">Informe o destino.</div>
+                        </div>
+                        <div class="col-6">
+                            <label for="ride-type" class="form-label">Tipo de Viagem</label>
+                            <select id="ride-type" name="tipo" class="form-select">
+                                <option value="compartilhada" selected>Compartilhada</option>
+                                <option value="particular">Particular</option>
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label for="payment-type" class="form-label">Pagamento</label>
+                            <select id="payment-type" name="pagamento" class="form-select">
+                                <option value="pix" selected>Pix</option>
+                                <option value="cartao">Cartão</option>
+                                <option value="dinheiro">Dinheiro</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-search me-2" aria-hidden="true"></i> Encontrar Motorista
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Seção de Motoristas Disponíveis -->
+        <section id="secao-motoristas" aria-labelledby="titulo-motoristas">
+            <h2 id="titulo-motoristas" class="h4 mb-1">Motoristas Disponíveis</h2>
+            <p class="text-body-secondary small mb-3">
+                O custo da viagem é dividido entre todos no carro: quanto mais pessoas, mais barato.
+            </p>
+            <!-- Cards gerados por js/scripts.js -->
+            <div id="lista-motoristas" class="row row-cols-1 g-3"></div>
+            <p id="sem-motoristas" class="text-body-secondary d-none">
+                Nenhum motorista encontrado para esse destino no momento.
+            </p>
+        </section>
+    </main>
+
+    <!-- Botão de Emergência (sempre visível) -->
+    <button type="button" class="btn btn-danger sos-fab" data-bs-toggle="modal" data-bs-target="#sosModal"
+        aria-label="Emergência: pedir socorro">
+        SOS
+    </button>
+
+    <!-- Modal de Emergência -->
+    <div class="modal fade" id="sosModal" tabindex="-1" aria-labelledby="sosModalTitulo" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h2 class="modal-title h5" id="sosModalTitulo">
+                        <i class="fas fa-exclamation-triangle me-2" aria-hidden="true"></i>Emergência
+                    </h2>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <a href="tel:190" class="btn btn-danger btn-lg w-100 mb-2">
+                        <i class="fas fa-phone-alt me-2" aria-hidden="true"></i>Ligar para a Polícia (190)
+                    </a>
+                    <a href="tel:192" class="btn btn-outline-danger w-100 mb-3">
+                        <i class="fas fa-ambulance me-2" aria-hidden="true"></i>SAMU (192)
+                    </a>
+
+                    <p id="sos-localizacao" class="mb-2" aria-live="polite">Obtendo sua localização...</p>
+                    <button type="button" id="sos-compartilhar" class="btn btn-outline-secondary w-100" disabled>
+                        <i class="fas fa-share-alt me-2" aria-hidden="true"></i>Enviar minha localização para um contato
+                    </button>
+                    <p class="small text-body-secondary mt-3 mb-0">
+                        Nesta versão, o UniRide não envia dados automaticamente às autoridades.
+                        Ao ligar, informe onde você está.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Login -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalTitulo" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="form-login" novalidate>
+                    <div class="modal-header">
+                        <h2 class="modal-title h5" id="loginModalTitulo">Entrar no UniRide</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="login-email" class="form-label">E-mail institucional</label>
+                            <input type="email" id="login-email" name="email" class="form-control"
+                                autocomplete="username" required>
+                            <div class="invalid-feedback">
+                                Use seu e-mail institucional (@<span class="dominio-institucional"></span>).
+                            </div>
+                        </div>
+                        <div class="mb-1">
+                            <label for="login-senha" class="form-label">Senha</label>
+                            <input type="password" id="login-senha" name="senha" class="form-control"
+                                autocomplete="current-password" required minlength="8">
+                            <div class="invalid-feedback">A senha deve ter pelo menos 8 caracteres.</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary w-100">Entrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Avisos (toasts) -->
+    <div id="toast-container" class="toast-container position-fixed start-50 translate-middle-x p-3"></div>
+
+    <!-- Rodapé -->
+    <footer class="bg-body-tertiary py-4 mt-5 border-top">
+        <div class="container text-center">
+            <p class="mb-0">© <span id="ano-atual">2025</span> UniRide - Caronas Universitárias</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+    <!-- JavaScript -->
+    <script src="js/scripts.js" defer></script>
+</body>
+</html>

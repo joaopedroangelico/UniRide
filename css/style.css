@@ -1,0 +1,90 @@
+:root {
+    --primary: #6C63FF;
+    --secondary: #4D44DB;
+    --brand-text: #6C63FF;
+    --app-bg: #f5f5f5;
+}
+
+/* O tema escuro dos componentes vem do próprio Bootstrap (data-bs-theme="dark") */
+[data-bs-theme="dark"] {
+    --brand-text: #9D97FF;
+    --app-bg: #121212;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--app-bg);
+    transition: background-color 0.3s, color 0.3s;
+    /* Espaço para o botão SOS não cobrir o conteúdo */
+    padding-bottom: 5rem;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    color: var(--brand-text) !important;
+}
+
+.btn-primary {
+    --bs-btn-bg: var(--primary);
+    --bs-btn-border-color: var(--primary);
+    --bs-btn-hover-bg: var(--secondary);
+    --bs-btn-hover-border-color: var(--secondary);
+    --bs-btn-active-bg: var(--secondary);
+    --bs-btn-active-border-color: var(--secondary);
+    --bs-btn-disabled-bg: var(--primary);
+    --bs-btn-disabled-border-color: var(--primary);
+}
+
+.ride-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Efeito de hover apenas em dispositivos com mouse (no toque ele fica "preso") */
+@media (hover: hover) {
+    .driver-card {
+        transition: transform 0.3s;
+    }
+
+    .driver-card:hover {
+        transform: translateY(-5px);
+    }
+}
+
+.driver-avatar {
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--primary);
+    color: #fff;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.sos-fab {
+    position: fixed;
+    right: 1rem;
+    bottom: calc(1rem + env(safe-area-inset-bottom));
+    z-index: 1030;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.toast-container {
+    top: 4rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        transition: none !important;
+    }
+}
